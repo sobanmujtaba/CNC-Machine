@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CNC Machine Thesis | COMSATS University</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500;600&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
+<style>
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg:     #0a0e13;
+    --panel:  #111820;
+    --border: #1e2a35;
+    --green:  #3ddc84;
+    --amber:  #f0a500;
+    --blue:   #4fa3e0;
+    --dim:    #4a6070;
+    --mid:    #7a9bb0;
+    --text:   #d0dde8;
+    --bright: #eef4fa;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 14px;
+    line-height: 1.75;
+    overflow-x: hidden;
+  }
+
+  /* ── Scroll reveal ─────────────────────────────────────────────────── */
+  .reveal {
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity 0.55s ease, transform 0.55s ease;
+  }
+  .reveal.visible { opacity: 1; transform: none; }
+
+  /* ── Layout ────────────────────────────────────────────────────────── */
+  .container { max-width: 900px; margin: 0 auto; padding: 0 24px; }
+
+  section { padding: 72px 0; }
+  section + section { border-top: 1px solid var(--border); }
+
+  /* ── Header ────────────────────────────────────────────────────────── */
+  header {
+    padding: 100px 0 80px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  header::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(var(--border) 1px, transparent 1px),
+      linear-gradient(90deg, var(--border) 1px, transparent 1px);
+    background-size: 40px 40px;
+    opacity: 0.35;
+    animation: gridshift 20s linear infinite;
+  }
+
+  @keyframes gridshift {
+    0%   { background-position: 0 0; }
+    100% { background-position: 40px 40px; }
+  }
+
+  header::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse 70% 60% at 50% 100%, rgba(10,14,19,0.95) 30%, transparent 100%);
+  }
+
+  .header-inner {
+    position: relative;
+    z-index: 1;
+    text-align: center;
+  }
+
+  .tag {
+    display: inline-block;
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--green);
+    border: 1px solid var(--green);
+    padding: 3px 10px;
+    margin-bottom: 28px;
+    opacity: 0;
+    animation: fadein 0.6s 0.2s forwards;
+  }
+
+  h1 {
+    font-family: 'DM Serif Display', serif;
+    font-size: clamp(32px, 6vw, 54px);
+    color: var(--bright);
+    line-height: 1.15;
+    margin-bottom: 16px;
+    opacity: 0;
+    animation: fadein 0.7s 0.4s forwards;
+  }
+
+  h1 em { font-style: italic; color: var(--green); }
+
+  .sub {
+    font-size: 13px;
+    color: var(--mid);
+    max-width: 480px;
+    margin: 0 auto 36px;
+    opacity: 0;
+    animation: fadein 0.7s 0.6s forwards;
+  }
+
+  .header-links {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    flex-wrap: wrap;
+    opacity: 0;
+    animation: fadein 0.7s 0.8s forwards;
+  }
+
+  .btn {
+    display: inline-block;
+    padding: 9px 20px;
+    font-family: inherit;
+    font-size: 12px;
+    letter-spacing: 0.06em;
+    text-decoration: none;
+    border: 1px solid currentColor;
+    transition: background 0.2s, color 0.2s;
+  }
+  .btn-green { color: var(--green); }
+  .btn-green:hover { background: var(--green); color: var(--bg); }
+
+  @keyframes fadein { to { opacity: 1; } }
+
+  /* ── Section headings ──────────────────────────────────────────────── */
+  .section-label {
+    font-size: 10px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--dim);
+    margin-bottom: 8px;
+  }
+
+  h2 {
+    font-family: 'DM Serif Display', serif;
+    font-size: clamp(22px, 4vw, 34px);
+    color: var(--bright);
+    margin-bottom: 20px;
+    line-height: 1.2;
+  }
+
+  p { color: var(--mid); margin-bottom: 14px; max-width: 700px; }
+
+  /* ── Objectives list ───────────────────────────────────────────────── */
+  .obj-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 4px;
+  }
+
+  .obj-item {
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+    padding: 14px 18px;
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--green);
+  }
+
+  .obj-num {
+    font-size: 11px;
+    color: var(--green);
+    min-width: 24px;
+    padding-top: 1px;
+    flex-shrink: 0;
+  }
+
+  .obj-text { font-size: 13px; color: var(--mid); line-height: 1.65; }
+
+  /* ── Component cards ───────────────────────────────────────────────── */
+  .card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 14px;
+  }
+
+  .card {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-top: 2px solid var(--border);
+    padding: 22px;
+    transition: border-top-color 0.2s;
+  }
+
+  .card:hover { border-top-color: var(--green); }
+
+  .card h3 {
+    font-size: 11px;
+    color: var(--green);
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    margin-bottom: 10px;
+  }
+
+  .card p { font-size: 12px; color: var(--mid); line-height: 1.7; margin: 0; }
+
+  code {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    background: var(--border);
+    padding: 1px 5px;
+    color: var(--blue);
+  }
+
+  /* ── Result stat strip ─────────────────────────────────────────────── */
+  .result-strip {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 12px;
+    margin-bottom: 28px;
+  }
+
+  .result-stat {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--amber);
+    padding: 18px 20px;
+  }
+
+  .result-num {
+    font-size: 26px;
+    font-weight: 600;
+    color: var(--amber);
+    line-height: 1;
+    margin-bottom: 6px;
+  }
+
+  .result-label {
+    font-size: 10px;
+    color: var(--dim);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }
+
+  /* ── Finding block ─────────────────────────────────────────────────── */
+  .finding {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--amber);
+    padding: 20px 24px;
+    margin-top: 4px;
+  }
+
+  .finding p { color: var(--text); margin: 0; }
+
+  /* ── Footer ────────────────────────────────────────────────────────── */
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 36px 0;
+    text-align: center;
+  }
+
+  footer p { font-size: 12px; color: var(--dim); max-width: none; margin-bottom: 6px; }
+  footer a { color: var(--mid); text-decoration: none; }
+  footer a:hover { color: var(--green); }
+
+</style>
+</head>
+<body>
+
+<!-- ── Header ──────────────────────────────────────────────────────────────── -->
+<header>
+  <div class="container header-inner">
+    <div class="tag">Embedded Systems / Mechatronics</div>
+    <h1>CNC Machine<br><em>Thesis</em></h1>
+    <p class="sub">Computer Numerical Control based Two-Dimensional Cutter &mdash; COMSATS University Islamabad</p>
+    <div class="header-links">
+      <a href="CNC Machine.pdf" class="btn btn-green" download>Download Thesis PDF</a>
+    </div>
+  </div>
+</header>
+
+<!-- ── 01 About ─────────────────────────────────────────────────────────────── -->
+<section id="about">
+  <div class="container">
+    <div class="reveal">
+      <div class="section-label">// 01</div>
+      <h2>About the Project</h2>
+      <p>
+        Design and development of a Computer Numerical Control machine capable of performing
+        accurate two-dimensional cutting, plotting, and engraving operations. The system
+        integrates mechanical, electrical, and software modules to automate machining tasks
+        with improved productivity and precision.
+      </p>
+      <p>
+        Microcontroller control and G-Code automation handle trajectory execution, giving the
+        machine a framework directly expandable to PCB etching and laser applications.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- ── 02 Objectives ────────────────────────────────────────────────────────── -->
+<section id="objectives">
+  <div class="container">
+    <div class="reveal">
+      <div class="section-label">// 02</div>
+      <h2>Project Objectives</h2>
+    </div>
+    <div class="obj-list reveal">
+      <div class="obj-item">
+        <span class="obj-num">01</span>
+        <span class="obj-text">Design a CNC based cutter for 2D motion control.</span>
+      </div>
+      <div class="obj-item">
+        <span class="obj-num">02</span>
+        <span class="obj-text">Enable automated trajectory following using G-Code.</span>
+      </div>
+      <div class="obj-item">
+        <span class="obj-num">03</span>
+        <span class="obj-text">Demonstrate cutting and engraving capabilities.</span>
+      </div>
+      <div class="obj-item">
+        <span class="obj-num">04</span>
+        <span class="obj-text">Establish a framework expandable to PCB etching and laser applications.</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── 03 Components ────────────────────────────────────────────────────────── -->
+<section id="components">
+  <div class="container">
+    <div class="reveal">
+      <div class="section-label">// 03</div>
+      <h2>System Components</h2>
+    </div>
+    <div class="card-grid reveal">
+      <div class="card">
+        <h3>Mechanical Structure</h3>
+        <p>Aluminium profiles support the X, Y and Z axes. Slide rails and lead screws enable motion.</p>
+      </div>
+      <div class="card">
+        <h3>Electronics</h3>
+        <p>Arduino Uno, CNC Shield V3, and <code>A4988</code> stepper drivers controlling NEMA 17 stepper motors.</p>
+      </div>
+      <div class="card">
+        <h3>Software Tools</h3>
+        <p>Aspire 10 for CAD/CAM, GRBL controller for G-Code execution, and Arduino IDE for firmware.</p>
+      </div>
+      <div class="card">
+        <h3>Actuation & Motion</h3>
+        <p>Stepper motors provide precise motion control with micro-stepping up to 1/16th resolution.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── 04 Results ───────────────────────────────────────────────────────────── -->
+<section id="results">
+  <div class="container">
+    <div class="reveal">
+      <div class="section-label">// 04</div>
+      <h2>Key Results</h2>
+    </div>
+    <div class="result-strip reveal">
+      <div class="result-stat">
+        <div class="result-num">2.5 µm</div>
+        <div class="result-label">Min Travel Resolution</div>
+      </div>
+      <div class="result-stat">
+        <div class="result-num">1/16</div>
+        <div class="result-label">Micro-step Resolution</div>
+      </div>
+      <div class="result-stat">
+        <div class="result-num">3-axis</div>
+        <div class="result-label">Motion Control</div>
+      </div>
+      <div class="result-stat">
+        <div class="result-num">G-Code</div>
+        <div class="result-label">Trajectory Execution</div>
+      </div>
+    </div>
+    <div class="finding reveal">
+      <p>
+        The machine successfully executed designed G-Code trajectories, engraved text, and produced
+        shapes with improved accuracy. Motion calibration demonstrates a minimum travel resolution
+        of 2.5 micrometres using micro-stepping.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- ── Footer ───────────────────────────────────────────────────────────────── -->
+<footer>
+  <div class="container">
+    <p>CNC Machine Thesis &mdash; COMSATS University Islamabad, Attock Campus</p>
+    <p style="margin-top:10px;">
+      <a href="https://github.com/sobanmujtaba" target="_blank">github.com/sobanmujtaba</a>
+    </p>
+  </div>
+</footer>
+
+<script>
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('visible');
+        observer.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.1 });
+
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+</script>
+</body>
+</html>
